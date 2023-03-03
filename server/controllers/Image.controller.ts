@@ -52,7 +52,7 @@ export const getAllImages = asyncHandler(async (req:any, res:any) => {
        result = result.skip(skip).limit(Limit)
 
        const images = await result;
-       const count = await Image.countDocuments({})
+       const count = await Image.countDocuments(queryObject)
 
        const totalPages = Math.ceil(count / Limit);
        const nextPage   = (currentPage + 1) > totalPages ? null : (currentPage + 1);
