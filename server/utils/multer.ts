@@ -31,7 +31,7 @@ const multerFilter = (req:any, file:any, cb:any) => {
 const uploadPhoto = multer({
   storage: storage,
   fileFilter : multerFilter,
-  limits: { fileSize: 500000 }
+  limits: { fileSize: 3000000 }
 });
 
 
