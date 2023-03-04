@@ -130,12 +130,13 @@ const Image: React.FC = (): JSX.Element => {
 
             // IF FILE DOES NOT SUPPORT FORMAT
             if (!SUPPORTED_FORMATS.includes(image.type)) {
-                console.log('File should be in image format');
+                setError('File should be in image format');
                 return;
             }
 
             setPreviewImage(URL.createObjectURL(image));
             setCurrentImage(image)
+            setError("")
 
         } catch (error: any) {
             setLoading(false);
@@ -188,22 +189,20 @@ const Image: React.FC = (): JSX.Element => {
 
         setSearch(event.target.value)
 
+
     }, 1000);
 
 
 
     // image preview on modal
     const onImagePreview = (image: string | HTMLImageElement) => setOpenModal({ isModalOpen: true, imageToShow: image });
-    
-
-
-    // Error Component Here
-    if (error) return <Error errorType={'error'} message={error} />
 
 
 
     return (
         <div>
+
+            {error && <Error errorType={'error'} message={error} />}
             <main>
                 <Box
                     sx={{
@@ -235,7 +234,7 @@ const Image: React.FC = (): JSX.Element => {
                                 maxWidth: '100%',
                             }}
                         >
-                            <TextField fullWidth label="Search" id="fullWidth" name={search} onChange={(e) => handleChange(e)}
+                            <TextField fullWidth label="Search" id="fullWidth" onChange={(e) => handleChange(e)}
                                 placeholder="Search via name..." variant="standard" />
                         </Box>
 
@@ -258,7 +257,7 @@ const Image: React.FC = (): JSX.Element => {
                             {previewImage && (<>
                                 <img src={previewImage} alt="image" className="uploadPreview"/>
                                 <br/>
-                                <LoadingButton loading={imageUploading} loadingIndicator="Uploading..." variant="contained" endIcon={<SendIcon />} onClick={(e) => onSubmit(e)}>
+                                <LoadingButton data-testid="UploadBtn" loading={imageUploading} loadingIndicator="Uploading..." variant="contained" endIcon={<SendIcon />} onClick={(e) => onSubmit(e)}>
                                     Upload
                                 </LoadingButton>
                             </>)}
@@ -277,7 +276,7 @@ const Image: React.FC = (): JSX.Element => {
                         {loading ? <span className="loader"></span> : imageData?.length ?
 
 
-                            imageData?.map((image, index) => ( <ImageList onImagePreview={onImagePreview} index={index} image={image} />)) : "No Images Uploaded..."}
+                            imageData?.map((image, index) => ( <ImageList onImagePreview={onImagePreview} index={index} image={image} />)) : <Error errorType={'warning'} message={'No Images Found...'} />}
                     </Grid>
 
 

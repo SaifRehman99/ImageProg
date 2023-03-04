@@ -76,3 +76,6 @@ app.use(errorHandlerMiddleware);
 app.listen(PORT, () => {
     console.log(`[Server] : Running on ${PORT} 🚀`);
 });
+
+
+export default app;
