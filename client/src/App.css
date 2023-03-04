@@ -2,3 +2,20 @@ img {
     height: 50px;
     width: 50px;
 }
+
+
+.cursor{
+    cursor: pointer;
+}
+
+
+.m-10{
+    margin:10px
+}
+
+
+.active {
+    font-size: 21px;
+    background: red;
+    color: white;
+}
