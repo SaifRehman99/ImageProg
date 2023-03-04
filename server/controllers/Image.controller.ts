@@ -6,11 +6,18 @@ import {UploadType} from "../types/Image"
 import fs from "fs";
 
 
+
+
 // @desc      Get All Images [ Filter via name & Pagination ]
 // @route     GET /api/v1/image
 // @access    Public
 export const getAllImages = asyncHandler(async (req:any, res:any) => {
 
+
+    
+    /**
+     * ===================== We can also use cloudinary for getting the images ====================== 
+     **/
 
     // https://cloudinary.com/documentation/admin_api#get_resources
     // https://support.cloudinary.com/hc/en-us/community/posts/360008223779-How-to-use-next-cursor-to-get-the-rest-of-the-files-in-a-specific-folder-
@@ -29,6 +36,8 @@ export const getAllImages = asyncHandler(async (req:any, res:any) => {
     //   }
 
 
+    // =================================================================================================  //
+
     try {
 
         const {name, limit, page} = req.query;
@@ -36,6 +45,7 @@ export const getAllImages = asyncHandler(async (req:any, res:any) => {
         const queryObject:{name?:any} = {};
 
 
+        // if name, creating the chain
         if(name){
             queryObject.name = {$regex:name, $options:"i"};
         }
@@ -43,6 +53,9 @@ export const getAllImages = asyncHandler(async (req:any, res:any) => {
 
 
        let result =  Image.find(queryObject);
+
+
+        // below responsible for pagination
 
        const currentPage = Number(page) || 1;
        const Limit = Number(limit) || 10;
@@ -68,9 +81,6 @@ export const getAllImages = asyncHandler(async (req:any, res:any) => {
     } catch (error:any) {
         throw new Error(error)
     }
-
-
-
 
 })
 

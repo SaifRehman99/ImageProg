@@ -1,5 +1,13 @@
 import {connect} from "mongoose";
 
+
+  
+/**
+ * This is function responsible for creating a connection with Database 
+ **/
+
+
+
 const connectDB = async (): Promise<void> => {
 
     try {

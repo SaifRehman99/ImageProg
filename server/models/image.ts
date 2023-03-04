@@ -1,10 +1,10 @@
 import mongoose from "mongoose";
+import {IImage} from "../types/Image"
 
-
-interface IImage {
-    name  : string;
-    image : string
-  }
+  
+/**
+ * Image schema 
+ **/
 
 
 const ImageSchema = new mongoose.Schema<IImage>({

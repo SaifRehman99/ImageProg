@@ -1,5 +1,10 @@
 import { Request, Response, NextFunction } from "express";
 
+  
+/**
+ * This is a Custom Error Handler, we are using "async-handler-express" which pass the exception to the middleware
+ * Here, we can modify the error by maintaining the concern 
+ **/
 
 const errorHandlerMiddleware = (err:any, req:Request, res:Response, next:NextFunction) => {
     

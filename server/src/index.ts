@@ -17,6 +17,10 @@ import ImageRoute from "../routes/Image.route";
 import notFound from "../middleware/notFound";
 import errorHandlerMiddleware from "../middleware/error-handler";
 
+
+/**
+ * Configuration of env 
+ **/
 dotenv.config();
 
 
