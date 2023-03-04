@@ -1,6 +1,29 @@
+/**
+ * Import React and States
+ */
 import { useState, useEffect } from 'react'
+
+
+/**
+ * Importing Component Here
+ */
+
 import Error from './Error';
+import ImageModal from './ImageModal';
+
+
+/**
+ * Importing Helpers/Utility/Custom functions here
+ */
+
 import { getAllImages, uploadImage } from "../services/Image"
+import { SUPPORTED_FORMATS, myDebounce } from "../utils/helpers"
+
+
+/**
+ * Imports from MUI Library
+ */
+
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import TextField from '@mui/material/TextField';
@@ -8,42 +31,54 @@ import PhotoCamera from '@mui/icons-material/PhotoCamera';
 import LoadingButton from '@mui/lab/LoadingButton';
 import SendIcon from '@mui/icons-material/Send';
 import Pagination from '@mui/material/Pagination';
-
-
-import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
-import CardMedia from '@mui/material/CardMedia';
 import Grid from '@mui/material/Grid';
 import Stack from '@mui/material/Stack';
 import Container from '@mui/material/Container';
 import IconButton from '@mui/material/IconButton';
-import { SUPPORTED_FORMATS, myDebounce } from "../utils/helpers"
-import ImageModal from './ImageModal';
+import ImageList from './ImageList';
+
 
 
 const Image: React.FC = (): JSX.Element => {
 
+    /**
+       * Component States Below
+    **/
+
+
+    // open/close image modal
     const [openModal, setOpenModal] = useState<any>({ isModalOpen: false, imageToShow: "" });
-
-    const handleClose = () => setOpenModal({ isModalOpen: false, imageToShow: "" });
-
-
+    
+    // image data from API
     const [imageData, setImageData] = useState<any[]>([])
     const [imageMeta, setImageMeta] = useState<any>({});
+
+    // Image Preview when upload ( temp view on screen after selecting image )
     const [previewImage, setPreviewImage] = useState("")
+
+    // Pagination Page
     const [currentPage, setCurrentPage] = useState(1)
 
+    // file object here, to sending to client
     const [currentImage, setCurrentImage] = useState<File>();
 
+    // name wise searching of image
     const [search, setSearch] = useState("")
 
 
+    // Loading and error states
     const [loading, setLoading] = useState<boolean>(false);
     const [imageUploading, setImageUploading] = useState<boolean>(false);
     const [error, setError] = useState("");
 
 
 
+    // Handler for closing of image modal
+    const handleClose = () => setOpenModal({ isModalOpen: false, imageToShow: "" });
+
+
+
+    // getting all images from API
     const getImages = async ({ page, name }: {
         page: number;
         name: string;
@@ -71,8 +106,6 @@ const Image: React.FC = (): JSX.Element => {
         getImages({ page: currentPage, name: search });
 
     }, [currentPage, search])
-
-
 
 
 
@@ -106,15 +139,19 @@ const Image: React.FC = (): JSX.Element => {
 
         } catch (error: any) {
             setLoading(false);
+            setError(error);
         }
     };
 
 
 
 
+    // Submit handler, before sending form data to API
     const onSubmit = async (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
 
         if (currentImage) {
+
+            try {
 
             setImageUploading(true)
 
@@ -129,19 +166,24 @@ const Image: React.FC = (): JSX.Element => {
 
             setPreviewImage("");
             setImageUploading(false)
+            } catch (error:any) {
+            
+            setError(error)
+            setImageUploading(false)
+
+            }
         }
     }
 
 
-
-
+    // Pagination Handler
     const handlePageChange = (page: number) => {
         if (page < 1 || page > imageMeta?.totalPages) return;
-
         setCurrentPage(page);
     }
 
 
+    // While searching via name, using debounce here to minimize the Database hits
     const handleChange = myDebounce((event: React.ChangeEvent<HTMLInputElement>) => {
 
         setSearch(event.target.value)
@@ -150,14 +192,15 @@ const Image: React.FC = (): JSX.Element => {
 
 
 
-    const onImagePreview = (image: HTMLImageElement) => {
-        setOpenModal({ isModalOpen: true, imageToShow: image });
-    }
+    // image preview on modal
+    const onImagePreview = (image: string | HTMLImageElement) => setOpenModal({ isModalOpen: true, imageToShow: image });
+    
 
 
-
-
+    // Error Component Here
     if (error) return <Error errorType={'error'} message={error} />
+
+
 
     return (
         <div>
@@ -170,6 +213,7 @@ const Image: React.FC = (): JSX.Element => {
                     }}
                 >
                     <Container maxWidth="sm">
+                        {/* Header  */}
                         <Typography
                             component="h3"
                             variant="h3"
@@ -184,6 +228,7 @@ const Image: React.FC = (): JSX.Element => {
                         </Typography>
 
 
+                        {/* Search */}
                         <Box
                             sx={{
                                 width: 500,
@@ -196,6 +241,8 @@ const Image: React.FC = (): JSX.Element => {
 
 
 
+
+                        {/* Image upload button */}
                         <Stack
                             sx={{ pt: 4 }}
                             direction="row"
@@ -203,55 +250,39 @@ const Image: React.FC = (): JSX.Element => {
                             justifyContent="center"
                         >
 
-
-
                             <IconButton color="primary" aria-label="upload picture" component="label">
                                 <input hidden accept="image/*" type="file" name="myFile" onChange={e => handleSelectImage(e)} />
                                 <PhotoCamera />
                             </IconButton>
 
                             {previewImage && (<>
-                                <img src={previewImage} alt="image" />
+                                <img src={previewImage} alt="image" className="uploadPreview"/>
+                                <br/>
                                 <LoadingButton loading={imageUploading} loadingIndicator="Uploading..." variant="contained" endIcon={<SendIcon />} onClick={(e) => onSubmit(e)}>
                                     Upload
                                 </LoadingButton>
                             </>)}
-
-
                         </Stack>
+
+
+
                     </Container>
                 </Box>
+
+
                 <Container sx={{ py: 8 }} maxWidth="md">
 
+                    {/* image Boxes */}
                     <Grid container spacing={3}>
                         {loading ? <span className="loader"></span> : imageData?.length ?
 
 
-                            imageData?.map((image, index) => (
-
-                                <Grid item key={index} xs={12} sm={6} md={4}>
-                                    <Card
-                                        sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}
-                                        className='cursor'
-                                        onClick={() => onImagePreview(image.image)}
-                                    >
-                                        <CardMedia
-                                            sx={{ height: 'auto' }}
-                                            component="img"
-                                            image={image.image}
-                                            alt={image.name}
-                                        />
-                                        <CardContent sx={{ height: '20%' }}>
-                                            <Typography gutterBottom variant="h6" component="h6">
-                                                {image.name}
-                                            </Typography>
-                                        </CardContent>
-                                    </Card>
-                                </Grid>
-                            )) : "No Images Uploaded..."}
+                            imageData?.map((image, index) => ( <ImageList onImagePreview={onImagePreview} index={index} image={image} />)) : "No Images Uploaded..."}
                     </Grid>
 
 
+
+                  {/* Pagination View */}
                     <Stack spacing={2} mt={11} sx={{ alignItems: 'center' }}>
                         <Pagination count={imageMeta?.totalPages} variant="outlined" color="primary" onChange={(event: React.ChangeEvent<unknown>, page: number) => {
                             handlePageChange(page)
@@ -260,8 +291,10 @@ const Image: React.FC = (): JSX.Element => {
 
                 </Container>
             </main>
+              
 
 
+               {/* Modal */}
             <ImageModal handleClose={handleClose} openModal={openModal} />
         </div>
     )

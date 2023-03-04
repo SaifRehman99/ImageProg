@@ -5,8 +5,6 @@ import Typography from '@mui/material/Typography';
 import {ILayout} from "../interface/interface"
 
 
-
-
 const Layout: React.FC<ILayout> = ({ children }) => {
     return (
         <>

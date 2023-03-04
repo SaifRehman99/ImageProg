@@ -14,3 +14,13 @@ export interface IImageModal {
   },
   handleClose: () => void
 }
+
+
+export interface IImageList {
+    index : number | string;
+    image : {
+        image: string,
+        name : string
+    },
+    onImagePreview : (image:string | HTMLImageElement) => void
+}

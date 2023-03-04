@@ -3,7 +3,6 @@ img {
     width: 100%;
 }
 
-
 .cursor{
     cursor: pointer;
 }
@@ -13,9 +12,11 @@ img {
     margin:10px
 }
 
+.uploadPreview{
+  width:30%;
+}
 
-
-/* Loader CSS */
+/* ================= Loader CSS =================  */
 .loader {
     width: 100%;
     height: 4.8px;

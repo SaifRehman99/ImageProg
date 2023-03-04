@@ -21,4 +21,4 @@ const ImageModal: React.FC<IImageModal> = ({ openModal, handleClose }): JSX.Elem
   )
 }
 
-export default ImageModal
+export default ImageModal;
